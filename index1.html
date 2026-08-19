@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="google-site-verification" content="4i90URxVq_FDig91E4UtKsQl3kQ0IJfOUWvEaMVZIc0" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SGEO — Smart Grid Energy Optimiser</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
+<meta name="description" content="Smart Grid Energy Optimiser — priority-based load shedding demo by Mount Litera Zee School, Muzaffarnagar">
+<link rel="stylesheet" href="style.css?v=3">
+<script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+</head>
+<body>
+<canvas id="splashCursor"></canvas>
+<div class="scroll-progress"></div>
+<div id="cursorRing"></div>
+<div class="loader-screen">
+  <div class="loader-logo">⚡ SGEO</div>
+  <div class="loader-sub">Powering what matters first</div>
+</div>
+<div class="grid-bg"></div>
+
+<nav class="nav">
+  <span class="nav-logo">⚡ SGEO</span>
+  <div class="nav-links">
+    <a href="#problem">Problem</a>
+    <a href="#how">How It Works</a>
+    <a href="#model3d">3D View</a>
+    <a href="#components">Components</a>
+    <a href="#sim">Simulator</a>
+    <a href="#circuit">Circuit</a>
+    <a href="#code">Code</a>
+    <a href="#gallery">Gallery</a>
+    <a href="#team">Team</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <span class="hero-icon3d">⚡</span>
+  <p class="hero-school">Mount Litera Zee School, Muzaffarnagar</p>
+  <p class="hero-school">Website by- Prasann Dhiman, class- 12th Science</p>
+  <h1 class="hero-title">SMART GRID<br><span>ENERGY OPTIMISER</span></h1>
+  <p class="hero-tag">Powering what matters first.</p>
+  <div class="hero-zones">
+    <span class="pill pill-red">🏥 Hospital</span>
+    <span class="pill pill-green">🏫 School</span>
+    <span class="pill pill-amber">💡 Street Lights</span>
+  </div>
+  <a class="hero-cta" href="#sim">Try the Live Simulator ↓</a>
+<model-viewer src="assets/models/SGEO.glb" alt="SGEO 3D Logo" auto-rotate camera-controls style="width:100%;max-width:500px;height:280px;margin-top:2rem;"></model-viewer>
+</header>
+
+<!-- PROBLEM -->
+<section id="problem" class="section reveal">
+  <h2>The Problem</h2>
+  <p class="lead">Real power grids sometimes can't supply electricity to every sector at once. During shortages, some areas <em>must</em> be prioritized over others.</p>
+  <div class="cards3">
+    <div class="card tilt"><h3>⚠️ Shortages Happen</h3><p>Demand can exceed supply — especially with variable renewable sources like sun and wind.</p></div>
+    <div class="card tilt"><h3>🏥 Not All Loads Are Equal</h3><p>A hospital losing power is a matter of life and death. A street light going dark is an inconvenience.</p></div>
+    <div class="card tilt"><h3>🧠 Someone Must Decide</h3><p>SGEO automates this decision — the same <strong>priority-based load shedding</strong> real utility companies use during blackouts.</p></div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how" class="section reveal">
+  <h2>How It Works</h2>
+  <p class="lead">Solar and wind inputs are combined into a single <strong>power-availability index</strong>. The Arduino compares it against thresholds and switches relays to power zones in strict priority order.</p>
+  <div class="flow">
+    <div class="flow-col">
+      <div class="flow-node src big">☀️ Solar Panel</div>
+      <div class="flow-node src big">🌬️ Wind Mill</div>
+    </div>
+    <div class="flow-arrow">➜</div>
+    <div class="flow-col">
+      <div class="flow-node store">🔋 Battery Storage<small>3× Li-ion via TP4056 charger</small></div>
+    </div>
+    <div class="flow-arrow">➜</div>
+    <div class="flow-col">
+      <div class="flow-node brain">🧠 Arduino UNO<small>Power Index = scaled solar + wind<br>(0 – 2046)</small></div>
+    </div>
+    <div class="flow-arrow">➜</div>
+    <div class="flow-col">
+      <div class="flow-node out red">🏥 Hospital — Priority 1<small>3 red LEDs · sheds last</small></div>
+      <div class="flow-node out green">🏫 School — Priority 2<small>6 green LEDs</small></div>
+      <div class="flow-node out amber">💡 Street — Priority 3<small>12 amber LEDs · sheds first · night-only via 🌙 LDR sensor</small></div>
+    </div>
+  </div>
+  <div class="thresholds">
+    <div class="th th-high"><b>HIGH</b><span>index ≥ 1400</span><span>Hospital + School + Street*</span></div>
+    <div class="th th-mod"><b>MODERATE</b><span>index ≥ 900</span><span>Hospital + School</span></div>
+    <div class="th th-low"><b>LOW</b><span>index ≥ 400</span><span>Hospital only</span></div>
+    <div class="th th-crit"><b>CRITICAL</b><span>index &lt; 400</span><span>Hospital only — never sheds</span></div>
+  </div>
+  <p class="note">* Street lights also require darkness (LDR) — no street lighting is wasted in daylight.</p>
+</section>
+
+<!-- 3D ARDUINO MODEL -->
+<section id="model3d" class="section reveal">
+  <h2>See It In 3D</h2>
+  <p class="lead">Drag to rotate, scroll to zoom — take a closer look at the Arduino UNO powering SGEO.</p>
+  <model-viewer src="assets/models/arduino_uno.glb" alt="3D Arduino Uno" auto-rotate camera-controls style="width:100%;height:380px;background:var(--panel);border:1px solid var(--line);border-radius:14px;"></model-viewer>
+</section>
+
+<!-- COMPONENTS -->
+<section id="components" class="section reveal">
+  <h2>Components</h2>
+  <p class="lead">The hardware behind SGEO — each part plays a specific role in sensing, deciding, and switching power to the right zones.</p>
+  <div class="cards3">
+    <div class="flip-card"><div class="flip-inner">
+      <div class="flip-front"><span class="icon3d">🧠</span><h3>Arduino UNO</h3><p>The brain of the system. Reads sensor data every 500ms, computes the power-availability index, and drives all four relays in strict priority order.</p><span class="flip-hint">tap ↻</span></div>
+      <div class="flip-back"><p><strong>Pins:</strong> A0 solar · A1 wind · A2 LDR<br>D2–D7 LCD · D8–D11 relays</p></div>
+    </div></div>
+    <div class="flip-card"><div class="flip-inner">
+      <div class="flip-front"><span class="icon3d">☀️</span><h3>Solar Panel</h3><p>Primary renewable energy source. Feeds charging current through a blocking diode and reports voltage to the Arduino via a sensor on A0.</p><span class="flip-hint">tap ↻</span></div>
+      <div class="flip-back"><p><strong>Path:</strong> Solar+ → 1N5408 diode → TP4056 IN+<br>Also taps into voltage sensor VCC</p></div>
+    </div></div>
+    <div class="flip-card"><div class="flip-inner">
+      <div class="flip-front"><span class="icon3d">🌬️</span><h3>Wind Mill (DC Motor)</h3><p>Represents wind energy input. Wind availability is simulated through a potentiometer wired to A1, scaled into the total power index.</p><span class="flip-hint">tap ↻</span></div>
+      <div class="flip-back"><p><strong>Control:</strong> Relay K4 · Pin D11<br>Turns on when wind raw &gt; 511</p></div>
+    </div></div>
+    <div class="flip-card"><div class="flip-inner">
+      <div class="flip-front"><span class="icon3d">🔋</span><h3>TP4056 Charging Module</h3><p>Safely charges the 3× Li-ion battery pack from the solar input and regulates a clean 5V output rail for the whole circuit.</p><span class="flip-hint">tap ↻</span></div>
+      <div class="flip-back"><p><strong>Output:</strong> OUT+ → Relay COM bus + 5V rail<br>Never connect USB while battery is in</p></div>
+    </div></div>
+    <div class="flip-card"><div class="flip-inner">
+      <div class="flip-front"><span class="icon3d">🔌</span><h3>Voltage Sensor</h3><p>Measures solar panel output voltage and reports the scaled analog reading to the Arduino for the power-index calculation.</p><span class="flip-hint">tap ↻</span></div>
+      <div class="flip-back"><p><strong>Signal:</strong> S → A0<br>Scaled 0–245 raw into 0–1023 range</p></div>
+    </div></div>
+    <div class="flip-card"><div class="flip-inner">
+      <div class="flip-front"><span class="icon3d">🌙</span><h3>LDR Module</h3><p>Detects ambient light. Gates the street-light zone so it only switches on at night, even when power is abundant — no wasted daylight lighting.</p><span class="flip-hint">tap ↻</span></div>
+      <div class="flip-back"><p><strong>Signal:</strong> DO → A2<br>HIGH = dark (configurable in code)</p></div>
+    </div></div>
+    <div class="flip-card"><div class="flip-inner">
+      <div class="flip-front"><span class="icon3d">🔀</span><h3>4-Channel Relay Module</h3><p>Active-LOW relays that physically switch power to the hospital, school, street-light, and windmill zones based on the Arduino's decisions.</p><span class="flip-hint">tap ↻</span></div>
+      <div class="flip-back"><p><strong>Pins:</strong> D8 hosp · D9 school<br>D10 street · D11 windmill</p></div>
+    </div></div>
+    <div class="flip-card"><div class="flip-inner">
+      <div class="flip-front"><span class="icon3d">🖥️</span><h3>16×2 LCD Display</h3><p>Shows the live power total and current grid status — HIGH, MODERATE, LOW, or CRITICAL — updated in real time from the sketch.</p><span class="flip-hint">tap ↻</span></div>
+      <div class="flip-back"><p><strong>Mode:</strong> 4-bit · RS/E on D2/D3<br>D4–D7 data lines</p></div>
+    </div></div>
+    <div class="flip-card"><div class="flip-inner">
+      <div class="flip-front"><span class="icon3d">💡</span><h3>LED Zones</h3><p>Red, green, and amber LEDs stand in for the hospital, school, and street-light loads — lighting up exactly as each zone is powered or shed.</p><span class="flip-hint">tap ↻</span></div>
+      <div class="flip-back"><p><strong>Count:</strong> 3 red · 6 green · 12 amber<br>220Ω resistor on each LED</p></div>
+    </div></div>
+    <div class="flip-card"><div class="flip-inner">
+      <div class="flip-front"><span class="icon3d">⚡</span><h3>1N5408 Diode</h3><p>A blocking diode on the solar input line, preventing reverse current from flowing back from the battery into the solar panel.</p><span class="flip-hint">tap ↻</span></div>
+      <div class="flip-back"><p><strong>Role:</strong> One-way current gate<br>Protects panel when it's dark</p></div>
+    </div></div>
+  </div>
+</section>
+
+<!-- SIMULATOR -->
+<section id="sim" class="section reveal">
+  <h2>Live Logic Simulator</h2>
+  <p class="lead">Drag the slider to change available power. Toggle day/night. Watch the grid decide — exactly as the real Arduino code does.</p>
+  <div class="sim-box">
+    <div class="sim-controls">
+      <label class="sim-label">Power Availability Index: <span id="simVal">1023</span> / 2046</label>
+      <input type="range" id="powerSlider" min="0" max="2046" value="1023">
+      <button id="dayNight" class="toggle" aria-pressed="true">🌙 Night</button>
+    </div>
+    <div class="lcd" id="lcd"><span id="lcdLine1">Total:1023</span><span id="lcdLine2">MODERATE</span></div>
+    <div class="sim-zones">
+      <div class="zone zone-red" id="zHospital"><div class="zone-icon">🏥</div><h3>Hospital</h3><div class="leds" data-count="3"></div><span class="zstate">ON</span></div>
+      <div class="zone zone-green" id="zSchool"><div class="zone-icon">🏫</div><h3>School</h3><div class="leds" data-count="6"></div><span class="zstate">ON</span></div>
+      <div class="zone zone-amber" id="zStreet"><div class="zone-icon">💡</div><h3>Street Lights</h3><div class="leds" data-count="12"></div><span class="zstate">OFF</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section id="stats" class="section reveal">
+  <div class="stats-grid">
+    <div class="stat-item"><div class="stat-num" data-target="3">0</div><div class="stat-label">Priority Zones</div></div>
+    <div class="stat-item"><div class="stat-num" data-target="500">0</div><div class="stat-label">ms Response Time</div></div>
+    <div class="stat-item"><div class="stat-num" data-target="21">0</div><div class="stat-label">LEDs Total</div></div>
+    <div class="stat-item"><div class="stat-num" data-target="4">0</div><div class="stat-label">Relay Channels</div></div>
+    <div class="stat-item"><div class="stat-num" data-target="2046">0</div><div class="stat-label">Max Power Index</div></div>
+  </div>
+</section>
+
+<!-- CIRCUIT -->
+<section id="circuit" class="section reveal">
+  <h2>Circuit &amp; Wiring</h2>
+  <div class="tables">
+    <div class="tbl-card">
+      <h3>🔋 Power Path</h3>
+      <table><tr><th>From</th><th>To</th></tr>
+      <tr><td>Solar panel +</td><td>1N5408 diode → TP4056 IN+</td></tr>
+      <tr><td>Solar panel + (tap)</td><td>Voltage sensor VCC terminal</td></tr>
+      <tr><td>Solar panel −</td><td>TP4056 IN−, sensor GND, shared GND</td></tr>
+      <tr><td>3× Li-ion cells (parallel)</td><td>TP4056 B+ / B−</td></tr>
+      <tr><td>TP4056 OUT+</td><td>Relay COM bus + 5V rail + Arduino 5V</td></tr>
+      <tr><td>TP4056 OUT−</td><td>Shared GND rail</td></tr></table>
+      <p class="warn">⚠️ One power source at a time — never connect USB while the battery is connected.</p>
+    </div>
+    <div class="tbl-card">
+      <h3>📡 Sensing</h3>
+      <table><tr><th>Signal</th><th>Arduino Pin</th></tr>
+      <tr><td>Voltage sensor "S" (solar)</td><td>A0</td></tr>
+      <tr><td>Wind potentiometer wiper</td><td>A1</td></tr>
+      <tr><td>LDR module DO</td><td>A2</td></tr></table>
+    </div>
+    <div class="tbl-card">
+      <h3>🖥️ LCD 16×2 (4-bit mode)</h3>
+      <table><tr><th>LCD Pin</th><th>Connects To</th></tr>
+      <tr><td>RS / E</td><td>D2 / D3</td></tr>
+      <tr><td>D4–D7</td><td>D4–D7</td></tr>
+      <tr><td>VO</td><td>Contrast pot wiper</td></tr>
+      <tr><td>RW, VSS, BLK</td><td>GND</td></tr>
+      <tr><td>VDD, BLA</td><td>5V rail</td></tr></table>
+    </div>
+    <div class="tbl-card">
+      <h3>🔀 Relay Module (active-LOW)</h3>
+      <table><tr><th>Relay</th><th>IN Pin</th><th>Load (NO — right terminal, verified)</th></tr>
+      <tr><td>K1 Hospital</td><td>D8</td><td>3 red LEDs (220Ω each)</td></tr>
+      <tr><td>K2 School</td><td>D9</td><td>6 green LEDs (220Ω each)</td></tr>
+      <tr><td>K3 Street</td><td>D10</td><td>12 amber LEDs (220Ω each)</td></tr>
+      <tr><td>K4 Windmill</td><td>D11</td><td>DC motor</td></tr></table>
+      <p class="note">Relay coils are powered by an isolated 12V adapter on the VR/GND header (jumper removed). All COM pins share the battery bus; all LED cathodes go to shared GND.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CODE -->
+<section id="code" class="section reveal">
+  <h2>The Arduino Code</h2>
+  <p class="lead">The full sketch (with LDR day/night gating). A baseline variant without the LDR also exists as a fallback. Loop runs every 500&nbsp;ms, prints debug data to Serial, and drives the LCD.</p>
+  <details class="code-box">
+    <summary>▶ View full sketch — sgeo_with_ldr.ino</summary>
+    <details class="code-box">
+  <summary>▶ View full sketch — sgeo_with_ldr.ino</summary>
+  <button class="copy-btn">📋 Copy</button>
+<pre><code>...(your existing code stays exactly the same)...</code></pre>
+</details>
+<pre><code>#include &lt;LiquidCrystal.h&gt;
+
+LiquidCrystal lcd(2, 3, 4, 5, 6, 7); // RS, E, D4, D5, D6, D7
+
+const int solarPin = A0;
+const int windPin   = A1;
+const int ldrPin    = A2;
+
+const int hospitalRelay = 8;
+const int schoolRelay   = 9;
+const int streetRelay   = 10;
+const int windmillRelay = 11;
+
+const bool RELAY_ACTIVE_LOW = true;
+
+// If your LDR module prints 1 when dark, keep this true.
+// If it prints 1 when bright instead, change this to false.
+const bool LDR_HIGH_MEANS_DARK = true;
+
+const int solarMaxRaw = 245;
+
+const int HIGH_THRESHOLD     = 1400;
+const int MODERATE_THRESHOLD = 900;
+const int LOW_THRESHOLD      = 400;
+
+void relayWrite(int pin, bool turnOn) {
+  if (RELAY_ACTIVE_LOW) {
+    digitalWrite(pin, turnOn ? LOW : HIGH);
+  } else {
+    digitalWrite(pin, turnOn ? HIGH : LOW);
+  }
+}
+
+bool isDark() {
+  int reading = digitalRead(ldrPin);
+  if (LDR_HIGH_MEANS_DARK) {
+    return reading == HIGH;
+  } else {
+    return reading == LOW;
+  }
+}
+
+void setup() {
+  pinMode(hospitalRelay, OUTPUT);
+  pinMode(schoolRelay, OUTPUT);
+  pinMode(streetRelay, OUTPUT);
+  pinMode(windmillRelay, OUTPUT);
+  pinMode(ldrPin, INPUT);
+
+  relayWrite(hospitalRelay, false);
+  relayWrite(schoolRelay, false);
+  relayWrite(streetRelay, false);
+  relayWrite(windmillRelay, false);
+
+  lcd.begin(16, 2);
+  lcd.print("Smart Grid Init");
+
+  Serial.begin(9600);
+  delay(1000);
+  lcd.clear();
+}
+
+void loop() {
+  int solarRaw = analogRead(solarPin);
+  int windRaw  = analogRead(windPin);
+  bool dark    = isDark();
+
+  int solarScaled = map(solarRaw, 0, solarMaxRaw, 0, 1023);
+  solarScaled = constrain(solarScaled, 0, 1023);
+
+  int total = solarScaled + windRaw;
+
+  Serial.print("Solar raw: "); Serial.print(solarRaw);
+  Serial.print(" | Solar scaled: "); Serial.print(solarScaled);
+  Serial.print(" | Wind raw: "); Serial.print(windRaw);
+  Serial.print(" | Total: "); Serial.print(total);
+  Serial.print(" | Dark: "); Serial.println(dark ? "YES" : "NO");
+
+  relayWrite(windmillRelay, windRaw &gt; 511);
+
+  lcd.setCursor(0, 0);
+  lcd.print("Total:");
+  lcd.print(total);
+  lcd.print("     ");
+
+  lcd.setCursor(0, 1);
+
+  if (total &gt;= HIGH_THRESHOLD) {
+    relayWrite(hospitalRelay, true);
+    relayWrite(schoolRelay, true);
+    relayWrite(streetRelay, dark);
+    lcd.print(dark ? "HIGH: all ON   " : "HIGH: street off");
+
+  } else if (total &gt;= MODERATE_THRESHOLD) {
+    relayWrite(hospitalRelay, true);
+    relayWrite(schoolRelay, true);
+    relayWrite(streetRelay, false);
+    lcd.print("MODERATE       ");
+
+  } else if (total &gt;= LOW_THRESHOLD) {
+    relayWrite(hospitalRelay, true);
+    relayWrite(schoolRelay, false);
+    relayWrite(streetRelay, false);
+    lcd.print("LOW: hosp only ");
+
+  } else {
+    relayWrite(hospitalRelay, true);
+    relayWrite(schoolRelay, false);
+    relayWrite(streetRelay, false);
+    lcd.print("CRITICAL       ");
+  }
+
+  delay(500);
+}</code></pre>
+  </details>
+</section>
+
+<!-- GALLERY -->
+<section id="gallery" class="section reveal">
+  <h2>Gallery</h2>
+  <p class="lead">Building SGEO — from breadboard to city model.</p>
+  <div class="gallery">
+    <div class="gitem"><img src="assets/images/photo1.jpg" alt="SGEO build photo 1" onerror="this.parentElement.classList.add('gempty')"><span>Photo coming soon</span></div>
+    <div class="gitem"><img src="assets/images/photo2.jpg" alt="SGEO build photo 2" onerror="this.parentElement.classList.add('gempty')"><span>Photo coming soon</span></div>
+    <div class="gitem"><img src="assets/images/photo3.jpg" alt="SGEO build photo 3" onerror="this.parentElement.classList.add('gempty')"><span>Photo coming soon</span></div>
+    <div class="gitem"><img src="assets/images/photo4.jpg" alt="SGEO build photo 4" onerror="this.parentElement.classList.add('gempty')"><span>Photo coming soon</span></div>
+    <div class="gitem"><img src="assets/images/photo5.jpg" alt="SGEO build photo 5" onerror="this.parentElement.classList.add('gempty')"><span>Photo coming soon</span></div>
+    <div class="gitem"><img src="assets/images/photo6.jpg" alt="SGEO build photo 6" onerror="this.parentElement.classList.add('gempty')"><span>Photo coming soon</span></div>
+  </div>
+</section>
+
+<!-- TEAM -->
+<!-- TEAM -->
+<section id="team" class="section reveal">
+  <h2>The Team</h2>
+  <p class="lead">The people behind SGEO — from wiring the first relay to building the city that surrounds it.</p>
+
+  <div class="mentor-card">
+  <span class="mentor-avatar">🧑‍🏫</span>
+  <div class="mentor-info">
+    <span class="mentor-badge">Mentor</span>
+    <h3>Mr. Kushal Sir</h3>
+    <p>Our Physics teacher, whose guidance and support made this project possible from the very first idea to the final build.</p>
+  </div>
+</div>
+  
+  <div class="team-group circuit">
+    <div class="team-group-title">⚙️ Circuit & Logic</div>
+    <div class="team-grid2">
+      <div class="member-card">
+        <span class="member-avatar">⚡</span>
+        <div class="member-name">Prasann Dhiman</div>
+        <div class="member-role">Class 12 · Circuit & Logic</div>
+        <p class="member-tag">Wired the relays, sensors, and Arduino logic that make SGEO actually think.</p>
+      </div>
+      <div class="member-card">
+        <span class="member-avatar">🔧</span>
+        <div class="member-name">Yash Kapil Chaudary</div>
+        <div class="member-role">Class 11 · Circuit & Logic</div>
+        <p class="member-tag">Handled the wiring and threshold logic that decides who gets power first.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="team-group city">
+    <div class="team-group-title">🏙️ City Model</div>
+    <div class="team-grid2">
+      <div class="member-card">
+        <span class="member-avatar">🏗️</span>
+        <div class="member-name">Aradhya Singh</div>
+        <div class="member-role">Class 12 · City Model</div>
+        <p class="member-tag">Built the physical city layout that brings the hospital, school, and streets to life.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="team-group support">
+    <div class="team-group-title">🤝 Supporting Team</div>
+    <div class="team-grid2">
+      <div class="member-card">
+        <span class="member-avatar">💚</span>
+        <div class="member-name">Heamshree</div>
+        <div class="member-role">Class 12 · Support</div>
+        <p class="member-tag">Helped from building circuits to decorating buildings. </p>
+      </div>
+      <div class="member-card">
+        <span class="member-avatar">✨</span>
+        <div class="member-name">Mishty</div>
+        <div class="member-role">Class 12 · Support</div>
+        <p class="member-tag">Helped bring the project together wherever an extra hand was needed.</p>
+      </div>
+      <div class="member-card">
+        <span class="member-avatar">🌟</span>
+        <div class="member-name">Somya Bhatiya</div>
+        <div class="member-role">Class 8 · Support</div>
+        <p class="member-tag">Pitched in with the model build and finishing touches.</p>
+      </div>
+      <div class="member-card">
+        <span class="member-avatar">💫</span>
+        <div class="member-name">Pakhi</div>
+        <div class="member-role">Class 8 · Support</div>
+        <p class="member-tag">Pitched in with the model build and finishing touches.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <p><strong>⚡ SGEO — Smart Grid Energy Optimiser</strong></p>
+  <p>Mount Litera Zee School, Muzaffarnagar · Inter-School Exhibition · 22 August 2026</p>
+  <p class="foot-tag">Powering what matters first.</p>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
