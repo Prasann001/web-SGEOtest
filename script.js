@@ -302,3 +302,57 @@ function animateLcdRoll() {
 }
 const lcdObs = new MutationObserver(animateLcdRoll);
 lcdObs.observe(lcd1, { childList: true, characterData: true, subtree: true });
+
+// ===== 3D power orb tied to simulator =====
+const powerOrb = document.getElementById('powerOrb');
+function updateOrb(total) {
+  if (!powerOrb) return;
+  const pct = total / 2046;
+  const scale = 0.7 + pct * 0.6;
+  powerOrb.style.transform = `scale(${scale})`;
+  powerOrb.style.animationDuration = (7 - pct * 5) + 's';
+  powerOrb.classList.remove('low', 'mid');
+  if (total < 900) powerOrb.classList.add('low');
+  else if (total < 1400) powerOrb.classList.add('mid');
+}
+// hook into existing slider without touching your original update() function
+slider.addEventListener('input', () => updateOrb(parseInt(slider.value, 10)));
+updateOrb(parseInt(slider.value, 10));
+
+// ===== 3D layered hero depth (mouse-driven parallax) =====
+const heroEl = document.querySelector('.hero');
+if (heroEl) {
+  heroEl.addEventListener('mousemove', e => {
+    const r = heroEl.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width - 0.5;
+    const y = (e.clientY - r.top) / r.height - 0.5;
+    const title = document.querySelector('.hero-title');
+    const tag = document.querySelector('.hero-tag');
+    const zones = document.querySelector('.hero-zones');
+    const cta = document.querySelector('.hero-cta');
+    if (title) title.style.transform = `translateZ(40px) translate(${x * 14}px, ${y * 10}px)`;
+    if (tag) tag.style.transform = `translateZ(20px) translate(${x * 8}px, ${y * 6}px)`;
+    if (zones) zones.style.transform = `translateZ(10px) translate(${x * 5}px, ${y * 4}px)`;
+    if (cta) cta.style.transform = `translateZ(30px) translate(${x * 10}px, ${y * 8}px)`;
+  });
+  heroEl.addEventListener('mouseleave', () => {
+    ['.hero-title', '.hero-tag', '.hero-zones', '.hero-cta'].forEach(sel => {
+      const el = document.querySelector(sel);
+      if (el) el.style.transform = '';
+    });
+  });
+}
+
+// ===== 3D rotating flow nodes on scroll =====
+function updateFlowNodeRotation() {
+  document.querySelectorAll('.flow-node').forEach((node, i) => {
+    const r = node.getBoundingClientRect();
+    const vh = window.innerHeight;
+    const dist = (r.top + r.height / 2 - vh / 2) / vh;
+    const rotate = Math.max(-25, Math.min(25, dist * -20));
+    node.style.transform = `translateZ(${(i % 3) * 10}px) rotateY(${rotate}deg)`;
+  });
+}
+window.addEventListener('scroll', updateFlowNodeRotation, { passive: true });
+if (typeof lenis !== 'undefined') lenis.on('scroll', updateFlowNodeRotation);
+updateFlowNodeRotation();
