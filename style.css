@@ -392,3 +392,25 @@ lenis.on('scroll', () => {
   updateScrollProgress();
   updateScrollRotation();
 });
+
+/* --- custom glowing scrollbar --- */
+::-webkit-scrollbar{width:10px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:linear-gradient(var(--cyan),var(--green));border-radius:10px;box-shadow:0 0 8px rgba(0,229,255,.5)}
+::-webkit-scrollbar-thumb:hover{background:linear-gradient(var(--green),var(--cyan))}
+html{scrollbar-color:var(--cyan) var(--bg);scrollbar-width:thin}
+
+/* --- active nav highlight --- */
+.nav-links a.active{color:var(--cyan);text-shadow:0 0 10px rgba(0,229,255,.6)}
+.nav-links a{position:relative}
+.nav-links a.active::after{
+  content:'';position:absolute;left:0;right:0;bottom:-6px;height:2px;
+  background:linear-gradient(90deg,var(--cyan),var(--green));border-radius:2px}
+
+/* --- LCD digit roll effect --- */
+.lcd span{display:inline-block;transition:transform .15s ease}
+.lcd span.rolling{animation:digit-roll .25s ease}
+@keyframes digit-roll{
+  0%{transform:translateY(-8px);opacity:.3}
+  100%{transform:translateY(0);opacity:1}
+}
