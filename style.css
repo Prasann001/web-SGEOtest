@@ -362,8 +362,8 @@ th{color:var(--dim);text-transform:uppercase;font-size:.7rem;letter-spacing:1px}
 .section.visible h2 .word{opacity:1;transform:translateY(0)}
 
 /* --- soft scroll snap (gentle, not aggressive) --- */
-html{scroll-snap-type:y proximity}
-.section, .hero{scroll-snap-align:start}
+html.lenis{height:auto}
+.lenis.lenis-smooth{scroll-behavior:auto!important}
 
 /* --- custom cursor ring --- */
 #cursorRing{
