@@ -414,3 +414,32 @@ html{scrollbar-color:var(--cyan) var(--bg);scrollbar-width:thin}
   0%{transform:translateY(-8px);opacity:.3}
   100%{transform:translateY(0);opacity:1}
 }
+
+/* ===== 3D POWER ORB (simulator) ===== */
+.power-orb-wrap{display:flex;justify-content:center;perspective:900px;margin:1.5rem 0}
+.power-orb{
+  width:110px;height:110px;position:relative;transform-style:preserve-3d;
+  animation:orb-spin 6s linear infinite;transition:transform .4s ease}
+.orb-core{
+  position:absolute;inset:0;border-radius:50%;
+  background:radial-gradient(circle at 35% 32%,var(--cyan),var(--bg2) 72%);
+  box-shadow:0 0 30px var(--cyan),inset 0 0 30px rgba(0,229,255,.35);
+  transition:background .4s ease,box-shadow .4s ease}
+.power-orb::before,.power-orb::after{
+  content:'';position:absolute;inset:-12px;border-radius:50%;
+  border:1px solid var(--cyan);opacity:.45;transition:border-color .4s ease}
+.power-orb::before{transform:rotateX(72deg)}
+.power-orb::after{transform:rotateY(72deg);border-color:var(--green)}
+@keyframes orb-spin{to{transform:rotateY(360deg)}}
+.power-orb.low .orb-core{background:radial-gradient(circle at 35% 32%,var(--red),var(--bg2) 72%);box-shadow:0 0 30px var(--red),inset 0 0 30px rgba(255,71,87,.35)}
+.power-orb.low::before,.power-orb.low::after{border-color:var(--red)}
+.power-orb.mid .orb-core{background:radial-gradient(circle at 35% 32%,var(--amber),var(--bg2) 72%);box-shadow:0 0 30px var(--amber),inset 0 0 30px rgba(255,179,0,.35)}
+.power-orb.mid::before,.power-orb.mid::after{border-color:var(--amber)}
+
+/* ===== 3D layered hero depth ===== */
+.hero{perspective:1200px}
+.hero-title,.hero-tag,.hero-zones,.hero-cta{transform-style:preserve-3d;will-change:transform;transition:transform .1s ease-out}
+
+/* ===== 3D rotating flow nodes on scroll ===== */
+.flow{perspective:1000px}
+.flow-node{transform-style:preserve-3d;transition:transform .3s ease}
