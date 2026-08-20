@@ -372,3 +372,23 @@ html.lenis{height:auto}
   transition:width .2s,height .2s,border-color .2s,background .2s;mix-blend-mode:screen}
 #cursorRing.hovering{width:50px;height:50px;background:rgba(0,229,255,.12);border-color:var(--green)}
 @media(hover:none){#cursorRing{display:none}}
+
+// --- Lenis smooth/inertia scrolling ---
+const lenis = new Lenis({
+  duration: 1.1,
+  easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+  smoothWheel: true,
+  touchMultiplier: 1.5
+});
+
+function raf(time) {
+  lenis.raf(time);
+  requestAnimationFrame(raf);
+}
+requestAnimationFrame(raf);
+
+// keep scroll-progress bar and scroll-rotation in sync with Lenis (not native scroll)
+lenis.on('scroll', () => {
+  updateScrollProgress();
+  updateScrollRotation();
+});
