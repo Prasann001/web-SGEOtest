@@ -173,8 +173,9 @@ updateScrollProgress();
       ctx.shadowBlur = 12;
       ctx.shadowColor = p.color;
       ctx.fill();
-      p.life -= 0.04;
-      p.y -= 0.5;
+     p.life -= 0.03;
+if (p.vx !== undefined) { p.x += p.vx; p.y += p.vy; p.vx *= 0.95; p.vy *= 0.95; }
+else { p.y -= 0.5; }
     });
     ctx.globalAlpha = 1;
     particles = particles.filter(p => p.life > 0);
@@ -250,3 +251,54 @@ if (ring) {
     el.addEventListener('mouseleave', () => ring.classList.remove('hovering'));
   });
 }
+
+// --- active nav highlight on scroll ---
+const navLinks = document.querySelectorAll('.nav-links a');
+const navSections = [...navLinks].map(a => document.querySelector(a.getAttribute('href'))).filter(Boolean);
+function updateActiveNav() {
+  const scrollPos = window.scrollY + window.innerHeight * 0.3;
+  let current = navSections[0];
+  navSections.forEach(sec => { if (sec.offsetTop <= scrollPos) current = sec; });
+  navLinks.forEach(a => a.classList.toggle('active', document.querySelector(a.getAttribute('href')) === current));
+}
+window.addEventListener('scroll', updateActiveNav, { passive: true });
+if (typeof lenis !== 'undefined') lenis.on('scroll', updateActiveNav);
+updateActiveNav();
+
+// --- particle burst on zone activation ---
+function burstAt(el, color) {
+  const r = el.getBoundingClientRect();
+  const cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+  for (let i = 0; i < 18; i++) {
+    const angle = (Math.PI * 2 * i) / 18;
+    const speed = 3 + Math.random() * 3;
+    particles.push({
+      x: cx, y: cy, size: Math.random() * 4 + 3, color,
+      life: 1, vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed
+    });
+  }
+}
+// hook into existing setZone (redefine to add burst on turning ON)
+const _origSetZone = setZone;
+setZone = function(zone, on) {
+  const wasOn = zone.classList.contains('on');
+  _origSetZone(zone, on);
+  if (on && !wasOn) {
+    const color = zone.classList.contains('zone-red') ? '#ff4757' : zone.classList.contains('zone-green') ? '#00ff9d' : '#ffb300';
+    burstAt(zone, color);
+  }
+};
+
+// --- LCD digit roll animation ---
+let lastLcdTotal = null;
+function animateLcdRoll() {
+  if (lcd1.textContent !== lastLcdTotal) {
+    lcd1.classList.add('rolling-parent');
+    lcd1.style.animation = 'none';
+    void lcd1.offsetWidth;
+    lcd1.style.animation = '';
+    lastLcdTotal = lcd1.textContent;
+  }
+}
+const lcdObs = new MutationObserver(animateLcdRoll);
+lcdObs.observe(lcd1, { childList: true, characterData: true, subtree: true });
