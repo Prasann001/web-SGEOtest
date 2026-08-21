@@ -443,3 +443,10 @@ html{scrollbar-color:var(--cyan) var(--bg);scrollbar-width:thin}
 /* ===== 3D rotating flow nodes on scroll ===== */
 .flow{perspective:1000px}
 .flow-node{transform-style:preserve-3d;transition:transform .3s ease}
+
+/* ===== WebGL background canvas ===== */
+#webglBg{position:fixed;inset:0;z-index:-2;opacity:.55}
+.grid-bg{opacity:.4} /* dim the old CSS grid so it layers under the particles, not fights them */
+
+/* ===== unified motion language markers ===== */
+:root{--ease-main:cubic-bezier(.22,1,.36,1);--dur-main:.9s}
