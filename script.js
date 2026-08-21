@@ -98,20 +98,7 @@ document.querySelectorAll('.flip-card').forEach(card => {
 });
 
 // --- scroll-linked 3D rotation ---
-function updateScrollRotation() {
-  const vh = window.innerHeight;
-  document.querySelectorAll('.section.visible').forEach(sec => {
-    const r = sec.getBoundingClientRect();
-    const center = r.top + r.height / 2;
-    const dist = Math.max(-1, Math.min(1, (center - vh / 2) / vh));
-    const rotate = dist * -6;
-    const scale = 1 - Math.abs(dist) * 0.025;
-    sec.style.transform = `perspective(1200px) rotateX(${rotate}deg) scale(${scale})`;
-  });
-}
-window.addEventListener('scroll', updateScrollRotation, { passive: true });
-window.addEventListener('resize', updateScrollRotation);
-updateScrollRotation();
+
 
 // --- intro loader ---
 window.addEventListener('load', () => {
@@ -185,24 +172,7 @@ else { p.y -= 0.5; }
 })();
 
 // --- stats counter animation ---
-const statObs = new IntersectionObserver(entries => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      const el = entry.target;
-      const target = parseInt(el.dataset.target, 10);
-      let current = 0;
-      const step = Math.max(1, Math.ceil(target / 60));
-      const tick = () => {
-        current += step;
-        if (current >= target) { el.textContent = target; }
-        else { el.textContent = current; requestAnimationFrame(tick); }
-      };
-      tick();
-      statObs.unobserve(el);
-    }
-  });
-}, { threshold: 0.5 });
-document.querySelectorAll('.stat-num').forEach(el => statObs.observe(el));
+
 
 // --- copy code button ---
 document.querySelectorAll('.copy-btn').forEach(btn => {
@@ -343,16 +313,100 @@ if (heroEl) {
   });
 }
 
-// ===== 3D rotating flow nodes on scroll =====
-function updateFlowNodeRotation() {
-  document.querySelectorAll('.flow-node').forEach((node, i) => {
-    const r = node.getBoundingClientRect();
-    const vh = window.innerHeight;
-    const dist = (r.top + r.height / 2 - vh / 2) / vh;
-    const rotate = Math.max(-25, Math.min(25, dist * -20));
-    node.style.transform = `translateZ(${(i % 3) * 10}px) rotateY(${rotate}deg)`;
+// ===== GSAP + Lenis integration (official recipe) =====
+gsap.registerPlugin(ScrollTrigger);
+lenis.on('scroll', ScrollTrigger.update);
+gsap.ticker.add((time) => { lenis.raf(time * 1000); });
+gsap.ticker.lagSmoothing(0);
+
+// ===== unified motion language: one easing/timing for every reveal =====
+gsap.utils.toArray('.section, .hero').forEach(sec => {
+  gsap.fromTo(sec, { opacity: 0, y: 60 }, {
+    opacity: 1, y: 0, duration: 0.9, ease: 'power3.out',
+    scrollTrigger: { trigger: sec, start: 'top 82%', toggleActions: 'play none none reverse' }
   });
-}
-window.addEventListener('scroll', updateFlowNodeRotation, { passive: true });
-if (typeof lenis !== 'undefined') lenis.on('scroll', updateFlowNodeRotation);
-updateFlowNodeRotation();
+});
+
+// section-level subtle rotate/scale as it passes center (replaces old hand-rolled version)
+gsap.utils.toArray('.section').forEach(sec => {
+  gsap.to(sec, {
+    rotateX: 4, scale: 0.985, ease: 'none',
+    scrollTrigger: { trigger: sec, start: 'top bottom', end: 'top top', scrub: true }
+  });
+  gsap.to(sec, {
+    rotateX: -4, scale: 0.985, ease: 'none',
+    scrollTrigger: { trigger: sec, start: 'bottom bottom', end: 'bottom top', scrub: true }
+  });
+});
+
+// flow nodes: staggered 3D entrance instead of scroll-tied rotation
+gsap.utils.toArray('.flow-node').forEach((node, i) => {
+  gsap.fromTo(node, { opacity: 0, rotateY: 40, z: -60 }, {
+    opacity: 1, rotateY: 0, z: 0, duration: 0.8, delay: i * 0.08, ease: 'power3.out',
+    scrollTrigger: { trigger: node, start: 'top 88%' }
+  });
+});
+
+// ===== Three.js particle field background =====
+(() => {
+  const canvas = document.getElementById('webglBg');
+  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+  camera.position.z = 60;
+
+  const count = 300;
+  const geo = new THREE.BufferGeometry();
+  const positions = new Float32Array(count * 3);
+  for (let i = 0; i < count * 3; i++) positions[i] = (Math.random() - 0.5) * 200;
+  geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+
+  const colors = [0x00e5ff, 0x00ff9d, 0xffb300];
+  const mat = new THREE.PointsMaterial({
+    size: 1.4, color: colors[0], transparent: true, opacity: 0.7,
+    blending: THREE.AdditiveBlending
+  });
+  const points = new THREE.Points(geo, mat);
+  scene.add(points);
+
+  let mouseX = 0, mouseY = 0;
+  window.addEventListener('mousemove', e => {
+    mouseX = (e.clientX / window.innerWidth - 0.5);
+    mouseY = (e.clientY / window.innerHeight - 0.5);
+  });
+  window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  });
+
+  function animateWebgl() {
+    points.rotation.y += 0.0006;
+    points.rotation.x += 0.0002;
+    camera.position.x += (mouseX * 8 - camera.position.x) * 0.02;
+    camera.position.y += (-mouseY * 8 - camera.position.y) * 0.02;
+    camera.lookAt(scene.position);
+    renderer.render(scene, camera);
+    requestAnimationFrame(animateWebgl);
+  }
+  animateWebgl();
+})();
+
+// ===== page transition on internal nav clicks =====
+document.querySelectorAll('.nav-links a').forEach(link => {
+  link.addEventListener('click', e => {
+    e.preventDefault();
+    const target = document.querySelector(link.getAttribute('href'));
+    const overlay = document.createElement('div');
+    overlay.style.cssText = 'position:fixed;inset:0;z-index:99999;background:var(--cyan);opacity:0;pointer-events:none;transition:opacity .25s ease';
+    document.body.appendChild(overlay);
+    requestAnimationFrame(() => { overlay.style.opacity = '0.12'; });
+    setTimeout(() => {
+      lenis.scrollTo(target, { duration: 1.1 });
+      setTimeout(() => { overlay.style.opacity = '0'; setTimeout(() => overlay.remove(), 300); }, 200);
+    }, 120);
+  });
+});
