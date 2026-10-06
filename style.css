@@ -459,3 +459,10 @@ html{scrollbar-color:var(--cyan) var(--bg);scrollbar-width:thin}
 .component-chip:hover{border-color:var(--cyan);box-shadow:0 10px 26px rgba(0,229,255,.15);transform:translateY(-4px)}
 .component-chip .icon{font-size:1.5rem;flex-shrink:0}
 .component-chip h3{font-size:.98rem;font-weight:600;margin:0}
+
+.btn-pill-link{
+  display:inline-block;margin:0 0 2rem;padding:.75rem 1.6rem;border-radius:999px;
+  background:linear-gradient(90deg,var(--cyan),var(--green));color:var(--bg);font-weight:700;
+  text-decoration:none;font-size:.9rem;transition:.25s;box-shadow:0 0 18px rgba(0,229,255,.3)}
+.btn-pill-link:hover{transform:translateY(-3px);box-shadow:0 0 28px rgba(0,229,255,.5)}
+
