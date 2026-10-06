@@ -112,47 +112,17 @@
   <h2>Components</h2>
   <p class="lead">The hardware behind SGEO — each part plays a specific role in sensing, deciding, and switching power to the right zones.</p>
   <div class="cards3">
-    <div class="flip-card"><div class="flip-inner">
-      <div class="flip-front"><span class="icon3d">🧠</span><h3>Arduino UNO</h3><p>The brain of the system. Reads sensor data every 500ms, computes the power-availability index, and drives all four relays in strict priority order.</p><span class="flip-hint">tap ↻</span></div>
-      <div class="flip-back"><p><strong>Pins:</strong> A0 solar · A1 wind · A2 LDR<br>D2–D7 LCD · D8–D11 relays</p></div>
-    </div></div>
-    <div class="flip-card"><div class="flip-inner">
-      <div class="flip-front"><span class="icon3d">☀️</span><h3>Solar Panel</h3><p>Primary renewable energy source. Feeds charging current through a blocking diode and reports voltage to the Arduino via a sensor on A0.</p><span class="flip-hint">tap ↻</span></div>
-      <div class="flip-back"><p><strong>Path:</strong> Solar+ → 1N5408 diode → TP4056 IN+<br>Also taps into voltage sensor VCC</p></div>
-    </div></div>
-    <div class="flip-card"><div class="flip-inner">
-      <div class="flip-front"><span class="icon3d">🌬️</span><h3>Wind Mill (DC Motor)</h3><p>Represents wind energy input. Wind availability is simulated through a potentiometer wired to A1, scaled into the total power index.</p><span class="flip-hint">tap ↻</span></div>
-      <div class="flip-back"><p><strong>Control:</strong> Relay K4 · Pin D11<br>Turns on when wind raw &gt; 511</p></div>
-    </div></div>
-    <div class="flip-card"><div class="flip-inner">
-      <div class="flip-front"><span class="icon3d">🔋</span><h3>TP4056 Charging Module</h3><p>Safely charges the 3× Li-ion battery pack from the solar input and regulates a clean 5V output rail for the whole circuit.</p><span class="flip-hint">tap ↻</span></div>
-      <div class="flip-back"><p><strong>Output:</strong> OUT+ → Relay COM bus + 5V rail<br>Never connect USB while battery is in</p></div>
-    </div></div>
-    <div class="flip-card"><div class="flip-inner">
-      <div class="flip-front"><span class="icon3d">🔌</span><h3>Voltage Sensor</h3><p>Measures solar panel output voltage and reports the scaled analog reading to the Arduino for the power-index calculation.</p><span class="flip-hint">tap ↻</span></div>
-      <div class="flip-back"><p><strong>Signal:</strong> S → A0<br>Scaled 0–245 raw into 0–1023 range</p></div>
-    </div></div>
-    <div class="flip-card"><div class="flip-inner">
-      <div class="flip-front"><span class="icon3d">🌙</span><h3>LDR Module</h3><p>Detects ambient light. Gates the street-light zone so it only switches on at night, even when power is abundant — no wasted daylight lighting.</p><span class="flip-hint">tap ↻</span></div>
-      <div class="flip-back"><p><strong>Signal:</strong> DO → A2<br>HIGH = dark (configurable in code)</p></div>
-    </div></div>
-    <div class="flip-card"><div class="flip-inner">
-      <div class="flip-front"><span class="icon3d">🔀</span><h3>4-Channel Relay Module</h3><p>Active-LOW relays that physically switch power to the hospital, school, street-light, and windmill zones based on the Arduino's decisions.</p><span class="flip-hint">tap ↻</span></div>
-      <div class="flip-back"><p><strong>Pins:</strong> D8 hosp · D9 school<br>D10 street · D11 windmill</p></div>
-    </div></div>
-    <div class="flip-card"><div class="flip-inner">
-      <div class="flip-front"><span class="icon3d">🖥️</span><h3>16×2 LCD Display</h3><p>Shows the live power total and current grid status — HIGH, MODERATE, LOW, or CRITICAL — updated in real time from the sketch.</p><span class="flip-hint">tap ↻</span></div>
-      <div class="flip-back"><p><strong>Mode:</strong> 4-bit · RS/E on D2/D3<br>D4–D7 data lines</p></div>
-    </div></div>
-    <div class="flip-card"><div class="flip-inner">
-      <div class="flip-front"><span class="icon3d">💡</span><h3>LED Zones</h3><p>Red, green, and amber LEDs stand in for the hospital, school, and street-light loads — lighting up exactly as each zone is powered or shed.</p><span class="flip-hint">tap ↻</span></div>
-      <div class="flip-back"><p><strong>Count:</strong> 3 red · 6 green · 12 amber<br>220Ω resistor on each LED</p></div>
-    </div></div>
-    <div class="flip-card"><div class="flip-inner">
-      <div class="flip-front"><span class="icon3d">⚡</span><h3>1N5408 Diode</h3><p>A blocking diode on the solar input line, preventing reverse current from flowing back from the battery into the solar panel.</p><span class="flip-hint">tap ↻</span></div>
-      <div class="flip-back"><p><strong>Role:</strong> One-way current gate<br>Protects panel when it's dark</p></div>
-    </div></div>
-  </div>
+  <div class="component-chip"><span class="icon">🧠</span><h3>Arduino UNO</h3></div>
+  <div class="component-chip"><span class="icon">☀️</span><h3>Solar Panel</h3></div>
+  <div class="component-chip"><span class="icon">🌬️</span><h3>Wind Mill (DC Motor)</h3></div>
+  <div class="component-chip"><span class="icon">🔋</span><h3>TP4056 Charging Module</h3></div>
+  <div class="component-chip"><span class="icon">🔌</span><h3>Voltage Sensor</h3></div>
+  <div class="component-chip"><span class="icon">🌙</span><h3>LDR Module</h3></div>
+  <div class="component-chip"><span class="icon">🔀</span><h3>4-Channel Relay Module</h3></div>
+  <div class="component-chip"><span class="icon">🖥️</span><h3>16×2 LCD Display</h3></div>
+  <div class="component-chip"><span class="icon">💡</span><h3>LED Zones</h3></div>
+  <div class="component-chip"><span class="icon">⚡</span><h3>1N5408 Diode</h3></div>
+</div>  
 </section>
 
 <!-- SIMULATOR -->
