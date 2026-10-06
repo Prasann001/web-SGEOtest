@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SGEO — In Depth</title>
+<meta name="description" content="A deeper look at SGEO's priority-based load shedding, and where this kind of system applies beyond the demo model.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
+<link rel="stylesheet" href="style.css">
+<style>
+  /* --- deep-dive page specific additions --- */
+  .dd-hero{padding:6rem 5% 3rem;text-align:center;max-width:900px;margin:0 auto}
+  .dd-hero .eyebrow-dd{color:var(--dim);letter-spacing:3px;text-transform:uppercase;font-size:.8rem;margin-bottom:1rem}
+  .dd-hero h1{font-size:clamp(2.2rem,5vw,3.6rem);font-weight:900;margin-bottom:1.2rem}
+  .dd-hero h1 span{background:linear-gradient(90deg,var(--cyan),var(--green));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .dd-hero p{color:var(--dim);line-height:1.7;font-size:1.05rem}
+  .back-link{display:inline-flex;align-items:center;gap:.5rem;color:var(--cyan);text-decoration:none;font-size:.9rem;
+    margin:2rem 5% 0;transition:.2s}
+  .back-link:hover{text-shadow:0 0 10px var(--cyan)}
+
+  .dd-block{max-width:900px;margin:0 auto;padding:3rem 5%}
+  .dd-block h2{font-size:1.8rem;margin-bottom:1rem;color:#fff}
+  .dd-block h2::after{content:'';display:block;width:64px;height:3px;margin-top:.5rem;
+    background:linear-gradient(90deg,var(--cyan),transparent);border-radius:2px}
+  .dd-block p{color:var(--dim);line-height:1.75;margin-bottom:1.1rem;font-size:.98rem}
+  .dd-block p strong{color:var(--text)}
+
+  .usecase-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.3rem;margin-top:2rem}
+  .usecase-card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:1.5rem;
+    transition:transform .25s,box-shadow .25s,border-color .25s}
+  .usecase-card:hover{transform:translateY(-6px);border-color:var(--cyan);box-shadow:0 14px 30px rgba(0,229,255,.15)}
+  .usecase-card .uc-icon{font-size:1.8rem;margin-bottom:.7rem;display:block}
+  .usecase-card h3{font-size:1.05rem;margin-bottom:.5rem}
+  .usecase-card p{color:var(--dim);font-size:.9rem;margin:0}
+
+  .spec-table-wrap{margin-top:2rem;background:var(--panel);border:1px solid var(--line);border-radius:14px;
+    padding:1.3rem 1.5rem;overflow-x:auto}
+  .spec-table-wrap table{width:100%;border-collapse:collapse;font-size:.88rem}
+  .spec-table-wrap th,.spec-table-wrap td{text-align:left;padding:.55rem .6rem;border-bottom:1px solid var(--line)}
+  .spec-table-wrap th{color:var(--dim);text-transform:uppercase;font-size:.7rem;letter-spacing:1px}
+
+  .dd-footer{text-align:center;padding:3rem 5%;color:var(--dim);font-size:.85rem;border-top:1px solid var(--line);margin-top:2rem}
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+
+<nav class="nav">
+  <span class="nav-logo">⚡ SGEO</span>
+  <div class="nav-links">
+    <a href="index.html">← Back to Main Site</a>
+  </div>
+</nav>
+
+<header class="dd-hero reveal">
+  <p class="eyebrow-dd">In Depth</p>
+  <h1>Beyond the <span>demo model</span></h1>
+  <p>SGEO's hospital-school-street demo is a scaled-down version of a decision problem every power grid faces. Here's a closer look at how the logic works, and where the same idea applies at a much bigger scale.</p>
+</header>
+
+<section class="dd-block reveal">
+  <h2>The Core Idea, Explained Further</h2>
+  <p>Every power grid is a balancing act between <strong>supply</strong> (how much electricity is being generated) and <strong>demand</strong> (how much every connected load wants to draw). Most of the time, supply comfortably covers demand. But when it doesn't — a cloudy week for solar, a calm week for wind, unexpected equipment failure — something has to give.</p>
+  <p>Utility companies handle this today through <strong>load shedding</strong>: deliberately cutting power to some areas so that others — the ones that matter most — stay online. SGEO automates exactly this decision using a simple, transparent rule set instead of a human operator making judgment calls in a crisis.</p>
+  <p>The model reads a live <strong>power-availability index</strong> (a combined reading of solar and wind input), compares it against four thresholds, and decides — every 500 milliseconds — which zones stay powered. Hospital-critical infrastructure never loses power. Everything else is prioritized by how essential it is to daily life, not by who shouts loudest or who's connected first.</p>
+</section>
+
+<section class="dd-block reveal">
+  <h2>Where Else This Applies</h2>
+  <p>The hospital/school/street-light model is a teaching example — but the underlying logic (rank loads by priority, shed the least critical first, restore in reverse order) shows up anywhere power is finite and not everything can run at once.</p>
+  <div class="usecase-grid">
+    <div class="usecase-card">
+      <span class="uc-icon">🏠</span>
+      <h3>Homes With Solar Panels</h3>
+      <p>A home battery system could keep the fridge and lights running during an outage while automatically dropping non-essential loads like the water heater or AC — exactly SGEO's logic, just at home scale.</p>
+    </div>
+    <div class="usecase-card">
+      <span class="uc-icon">🌾</span>
+      <h3>Rural Microgrids</h3>
+      <p>Villages running on standalone solar/wind microgrids (common in areas without reliable grid access) need the same prioritization — wells and clinics before decorative lighting.</p>
+    </div>
+    <div class="usecase-card">
+      <span class="uc-icon">🚨</span>
+      <h3>Disaster Relief Zones</h3>
+      <p>Temporary power setups after natural disasters have to make hard calls fast — communication equipment and medical tents over everything else. An automated priority system removes the guesswork under pressure.</p>
+    </div>
+    <div class="usecase-card">
+      <span class="uc-icon">🏢</span>
+      <h3>Campuses &amp; Office Parks</h3>
+      <p>Large campuses on partial backup power during outages could keep server rooms and emergency lighting alive while shedding parking lot lighting or non-critical HVAC zones first.</p>
+    </div>
+    <div class="usecase-card">
+      <span class="uc-icon">🔌</span>
+      <h3>EV Charging Stations</h3>
+      <p>A charging hub with limited grid capacity could prioritize emergency vehicles or pre-booked slots over opportunistic top-ups when demand spikes.</p>
+    </div>
+    <div class="usecase-card">
+      <span class="uc-icon">🏭</span>
+      <h3>Industrial Backup Power</h3>
+      <p>Factories on generator backup during grid failure often need to keep safety systems and critical production lines running while idling less time-sensitive equipment — the same shed-by-priority approach.</p>
+    </div>
+  </div>
+</section>
+
+<section class="dd-block reveal">
+  <h2>Why Priority-Based, Not Equal Sharing</h2>
+  <p>An alternative approach would be splitting available power equally across every zone. SGEO deliberately doesn't do this — equal sharing under scarcity often means <strong>everyone gets just enough to fail</strong>: a hospital running on reduced power is far more dangerous than a hospital at full power while streetlights stay dark. Prioritization accepts an uncomfortable trade-off on purpose, the same way real utilities do, rather than spreading the shortage thin enough to compromise what matters most.</p>
+</section>
+
+<section class="dd-block reveal">
+  <h2>Quick Technical Reference</h2>
+  <div class="spec-table-wrap">
+    <table>
+      <tr><th>Parameter</th><th>Value</th></tr>
+      <tr><td>Decision interval</td><td>Every 500ms</td></tr>
+      <tr><td>Power index range</td><td>0 – 2046</td></tr>
+      <tr><td>HIGH threshold</td><td>≥ 1400 — Hospital + School + Street (if dark)</td></tr>
+      <tr><td>MODERATE threshold</td><td>≥ 900 — Hospital + School</td></tr>
+      <tr><td>LOW threshold</td><td>≥ 400 — Hospital only</td></tr>
+      <tr><td>CRITICAL</td><td>&lt; 400 — Hospital only, never sheds</td></tr>
+      <tr><td>Street-light gating</td><td>Requires darkness (LDR), even during HIGH</td></tr>
+      <tr><td>Windmill relay</td><td>Independent — activates when wind raw &gt; 511</td></tr>
+    </table>
+  </div>
+</section>
+
+<a href="index.html" class="back-link" style="display:block;text-align:center;margin:3rem auto 0;width:fit-content">← Back to Main Site</a>
+
+<footer class="dd-footer">
+  <p>SGEO — Smart Grid Energy Optimiser · Mount Litera Zee School, Muzaffarnagar</p>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
