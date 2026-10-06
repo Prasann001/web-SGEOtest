@@ -450,3 +450,12 @@ html{scrollbar-color:var(--cyan) var(--bg);scrollbar-width:thin}
 
 /* ===== unified motion language markers ===== */
 :root{--ease-main:cubic-bezier(.22,1,.36,1);--dur-main:.9s}
+
+/* --- simple component name chips (replaces flip cards) --- */
+.component-chip{
+  background:var(--panel);border:1px solid var(--line);border-radius:14px;
+  padding:1.3rem 1.4rem;display:flex;align-items:center;gap:.9rem;
+  transition:transform .25s,box-shadow .25s,border-color .25s}
+.component-chip:hover{border-color:var(--cyan);box-shadow:0 10px 26px rgba(0,229,255,.15);transform:translateY(-4px)}
+.component-chip .icon{font-size:1.5rem;flex-shrink:0}
+.component-chip h3{font-size:.98rem;font-weight:600;margin:0}
